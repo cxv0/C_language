@@ -154,6 +154,7 @@ void login_fun(int *page,int *num)
 						setfillstyle(1, WHITE);
 						bar(270, 225, 410, 255);
 						puthz(270,225,"µÇÂ¼³É¹¦",32,36,GREEN);
+						create_user_info(*num1);
 						delay(1000); 
 						*page=3;                                    
 						break;
