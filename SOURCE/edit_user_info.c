@@ -23,9 +23,11 @@ void create_user_info(char *account)
             exit(1);
         }
         printf("\nError on open %s_info.dat!",account);
+
+        fclose(create_fp);
     }
 
-    fclose(fp);
+    fclose(search_fp);
 }
 
 void add_user_info(char *account, info *ip, char *item_name, int *item_time, int *item_status, long *item_code)
@@ -56,7 +58,7 @@ void add_user_info(char *account, info *ip, char *item_name, int *item_time, int
 }
 
 void edit_user_info(char *account, info *ip, char *item_name, int *item_time, int *item_status, long *item_code, int number)
-{ //number代表要编辑的结构体在该文件的结构体中的位次
+{ //number代表要编辑的结构体在该文件的结构体中的位次，ip对应要修改的结构体
     char file_path[255]; //该函数用于更改ip对应的info结构体在.dat中的数据
     sprintf(file_path, "C:\\code\\TEXT\\%s_info.dat", account);
 
