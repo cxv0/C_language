@@ -14,6 +14,6 @@
 #include "real_time.h"
 #include "takeout.h"
 #include "info.h"
-#include "edit_user_info.h"
+#include "user_info.h"
 
 #endif
