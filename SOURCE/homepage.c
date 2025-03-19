@@ -64,11 +64,9 @@ void draw_homepage()
 
 void homefunc(int *page, int *num)
 {
+    unsigned char q = 0;
     unsigned char *m;
-    time_t now;
-    struct tm *local_time;
-    char time_str[20];
-    *m=00;
+    m = &q;
 
     if(*page == 3)
     {

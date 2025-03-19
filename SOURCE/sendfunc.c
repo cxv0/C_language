@@ -20,6 +20,6 @@ void draw_sendpage(int *num)
     rectangle(172, 155, 628, 266);
     rectangle(172, 266, 628, 377);
     rectangle(172, 377, 628, 398);
-
-    
 }
+
+void sendfunc()

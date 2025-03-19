@@ -29,6 +29,8 @@ void draw_takeout_page()
     floodfill(615, 20, LIGHTGRAY);
     floodfill(615, 35, LIGHTGRAY);
 
+    // 绘制左侧功能栏
+
     // 绘制底部菜单栏
     setfillstyle(SOLID_FILL, YELLOW);
     bar(10, 420, 165, 460); // 首页

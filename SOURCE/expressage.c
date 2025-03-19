@@ -21,16 +21,13 @@ void draw_expage()
 
     // 绘制左侧功能栏
     setfillstyle(SOLID_FILL, YELLOW);
-    bar(10, 60, 150, 160); //取件
-    bar(10, 180, 150, 280); //寄件
-    bar(10, 300, 150, 400); //待定功能
+    bar(10, 60, 150, 90); //快递列表
+    bar(10, 110, 150, 140); //找人代取
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(12, 62, 148, 158);
-    bar(12, 182, 148, 278);
-    bar(12, 302, 148, 398);
-    puthz(12, 62, "取件", 32, 36, WHITE);
-    puthz(12, 182, "寄件", 32, 36, WHITE);
-    puthz(12, 302, "", 32, 36, WHITE);
+    bar(12, 62, 148, 88);
+    bar(12, 112, 148, 138);
+    puthz(12, 62, "快递列表", 16, 18, WHITE);
+    puthz(12, 182, "找人代取", 16, 18, WHITE);
 
     // 绘制右侧功能栏
     setfillstyle(SOLID_FILL, YELLOW);
@@ -59,11 +56,9 @@ void draw_expage()
 
 void expagefunc(int *page, int *num)
 {
+    unsigned char q = 0;
     unsigned char *m;
-    time_t now;
-    struct tm *local_time;
-    char time_str[20];
-    *m=00;
+    m = &q;
 
     if(*page == 4)
     {
@@ -166,11 +161,6 @@ void expagefunc(int *page, int *num)
     if(*page == 3)
     {
         homefunc(page, num);
-    }
-
-    if(*page == 5)
-    {
-        
     }
 }
 
