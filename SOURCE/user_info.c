@@ -36,7 +36,7 @@ void create_user_info(char *account)
     
 }
 
-void add_user_info(char *account, info *ip, char *item_name, int *item_time, int *item_status, long *item_code)
+void add_user_info(char *account, info *ip, char *item_name, float *item_price, int *item_status, long *item_code)
 {
     FILE *fp;
     char file_path[255];
@@ -51,7 +51,7 @@ void add_user_info(char *account, info *ip, char *item_name, int *item_time, int
     }
 
     strcpy(ip->name, item_name);
-    ip->time = *item_time;
+    ip->price = *item_price;
     ip->status = *item_status;
     ip->code = *item_code;
     fwrite(ip, sizeof(info), 1, fp);
@@ -64,7 +64,7 @@ void add_user_info(char *account, info *ip, char *item_name, int *item_time, int
     }
 }
 
-void edit_user_info(char *account, info *ip, char *item_name, int *item_time, int *item_status, long *item_code, int number)
+void edit_user_info(char *account, info *ip, char *item_name, float *item_price, int *item_status, long *item_code, int number)
 { //number代表要编辑的结构体在该文件的结构体中的位次，ip对应要修改的结构体
     FILE *fp;
     char file_path[255]; //该函数用于更改ip对应的info结构体在.dat中的数据
@@ -80,7 +80,7 @@ void edit_user_info(char *account, info *ip, char *item_name, int *item_time, in
 
     fseek(fp, (number - 1)* sizeof(info), SEEK_SET); //将指针移动到第number个info起始处
     strcpy(ip->name, item_name);
-    ip->time = *item_time;
+    ip->price = *item_price;
     ip->status = *item_status;
     ip->code = *item_code;
     fwrite(ip, sizeof(info), 1, fp);

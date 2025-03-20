@@ -15,5 +15,6 @@
 #include "takeout.h"
 #include "info.h"
 #include "user_info.h"
+#include "database.h"
 
 #endif
