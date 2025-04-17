@@ -1,5 +1,6 @@
 #include"config.h"
-#include"custom.h"
+#include"input_pass.h"
+
 int Input_Vis(char *ip,int x,int y,int lim,int color) //输入内容，输入框左上角坐标x,y，字数限制，输入框颜�?
 {                                                      //注意：该输入函数要求输入框宽度为25
 	int i=0;

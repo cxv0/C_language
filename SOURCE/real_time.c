@@ -1,7 +1,7 @@
 #include"config.h"
-#include"custom.h"
+#include "real_time.h"
 
-void real_time(unsigned char *m) 
+void real_time(unsigned char *m, int *avatar_state)
 {
     time_t now;
     struct tm *local_time;
@@ -14,7 +14,7 @@ void real_time(unsigned char *m)
     // 格式化时间为字符串
     strftime(time_str, sizeof(time_str), "%m-%d %H:%M", local_time);
 
-     if(local_time->tm_min!=*m)
+     if(local_time->tm_min!=*m || *avatar_state == 2)
      {
         *m=local_time->tm_min;
 
@@ -22,9 +22,9 @@ void real_time(unsigned char *m)
         setcolor(LIGHTGRAY);
         setlinestyle(SOLID_LINE, 0, 1);
         setfillstyle(SOLID_FILL, YELLOW);
-        bar(10, 10, 157, 40); // 时间框
+        bar(10, 10, 150, 40); // 时间框
         setfillstyle(SOLID_FILL, LIGHTGRAY);
-        bar(12, 12, 155, 38);
+        bar(12, 12, 148, 38);
 
         // 设置时间文本颜色
         setcolor(BLACK);

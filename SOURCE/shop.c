@@ -1,6 +1,6 @@
 #include "shop.h"
 #include "config.h"
-#include "custom.h"
+#include "order.h"
 
 /******
 COPYRIGHT:  Jiang Yihan
@@ -149,6 +149,7 @@ void output_to_screen(RECORD *rp)
     int i = 0, j = 0;
     char str[10];
     RECORD temp = *rp;
+    settextstyle(TRIPLEX_FONT, 0, 2);
 
     for(i = 0;i < 1;i ++)
     {
@@ -156,11 +157,11 @@ void output_to_screen(RECORD *rp)
         {
             str[0] = '\0';
             itoa(temp.num[j], str, 10);
-            outtextxy(300, 15 + 15 * j, str);
+            outtextxy(590, 55 + 20 * j, str);
         }
         str[0] = '\0';
         itoa(temp.sum, str, 10);
-        outtextxy(260, 100, str);
+        outtextxy(570, 375, str);
     }
 }
 

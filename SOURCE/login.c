@@ -1,5 +1,8 @@
-#include"config.h"
-#include"custom.h"
+#include "config.h"
+#include "gtaccount.h"
+#include "login.h"
+#include "input_pass.h"
+#include "force_exit.h"
 
 int Judge_Login(char* a, char* p)
 {
@@ -71,9 +74,11 @@ int login_fun()
 	clrmous(MouseX,MouseY);
 	cleardevice();
 	login_page();
+	
 	while(1)
 	{
 		newmouse(&MouseX,&MouseY,&press);
+
 		if(mouse_press(230,150,430,174)==1)
 		{
 			MouseS=0;
@@ -149,6 +154,7 @@ int login_fun()
 				setfillstyle(1, WHITE);
 				bar(270, 225, 410, 255);
 				puthz(270,225,"µÇÂ¼³É¹¦",32,36,GREEN);
+				get_acc_to_dat(num1);
 				delay(1000);                                  
 				return 3;
 			}

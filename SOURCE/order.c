@@ -1,5 +1,10 @@
 #include "config.h"
-#include "custom.h"
+#include "order.h"
+#include "market.h"
+#include "real_time.h"
+#include "shop.h"
+#include "Avatarfunc.h"
+#include "force_exit.h"
 
 #define SENSITIVITY 75 //点击灵敏度,75左右较合适
 
@@ -71,6 +76,7 @@ void switch_show_orderpage(int *orderpage)
     char str[1];
     setfillstyle(SOLID_FILL, LIGHTGRAY);
     bar(311, 385, 329, 409);
+    draw_cartbutton();
     delay(15);
     sprintf(str, "%d", *orderpage);
     settextstyle(1, 0, 3); //字体为三重矢量字体,TRIPLEX_FONT
@@ -314,11 +320,13 @@ void draw_cartbutton() //绘制购物车按钮
     draw_setpage(orderpage);
 }*/
 
-int orderfunc(INFO t[16])
+int orderfunc(INFO (*t)[16])
 {
 
     int num = 0, order_page = 1, event_click = 0;
     int i = 0, j = 0;
+    int *avatar_state = 0;
+    int *click_able = 0;
     int buy_num[16] = {0};
     int *orderpage = &order_page;
     unsigned char *m;
@@ -335,7 +343,26 @@ int orderfunc(INFO t[16])
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        real_time(m);
+        real_time(m, avatar_state);
+        draw_avatarpage(avatar_state, click_able);
+        Avatarfunc(click_able);
+
+        if(forceexit == 1)
+        {
+            forceexit = 0;
+            return 1;
+        }
+        
+        if(*avatar_state == 2)
+        {
+            clrmous(MouseX, MouseY);
+            cleardevice();
+            draw_order_management_page();
+            draw_setpage(orderpage);
+            switch_show_orderpage(orderpage);
+            draw_cartbutton();
+            real_time(m, avatar_state);
+        }
 
         if(mouse_press(322, 422, 473, 458) == 2) //外卖框
         {
@@ -400,6 +427,24 @@ int orderfunc(INFO t[16])
             return 6;
         }
 
+        else if(mouse_press(585,345,615,375) == 2)//购物车
+        {
+            if(num == 0)
+            {
+                MouseS = 1;
+                num = 5;
+            }
+            continue;
+        }
+
+        else if(mouse_press(585,345,615,375) == 1)//购物车
+        {
+            MouseS = 0;
+            draw_cartlist();
+            cartfunc(t);
+            continue;
+        }
+
         else
         {  
             if(num != 0)
@@ -443,7 +488,7 @@ int orderfunc(INFO t[16])
                     MouseS = 0;
                     clrmous(MouseX, MouseY);
                     choose_number(&buy_num[(*orderpage - 1) * 4 + i + j]);
-                    t[(*orderpage - 1) * 4 + i + j].num = buy_num[(*orderpage - 1) * 4 + i + j];
+                    t[0][(*orderpage - 1) * 4 + i + j].num = buy_num[(*orderpage - 1) * 4 + i + j];
                     //choose_number(&buy_num[(*orderpage - 1) + i / 2 + j]);
                     //redraw_market(orderpage);
                     draw_order_management_page();
@@ -456,3 +501,80 @@ int orderfunc(INFO t[16])
     }
 }
 
+
+void draw_cartlist()
+{
+
+    int i;
+    setbkcolor(LIGHTGRAY);
+    setcolor(RED);
+    setfillstyle(SOLID_FILL, GREEN);
+
+    bar(250,410,430,450);
+    bar(570,445,630,475);
+
+    
+    puthz(10,20,"商品名称",32,36,RED);
+    puthz(300,20,"价格",32,36,RED);
+    puthz(560,20,"数量",32,36,RED);
+    // puthz(540,400,"总价",24,28,RED);
+    // puthz(280,415,"确认购买",24,28,WHITE);
+    // puthz(570,445,"返回",24,28,WHITE);
+
+    setcolor(RED);
+    setlinestyle(SOLID_LINE, 0, 1);
+    for(i=0;i<16;i++)
+    {
+        line(20,100+20*i,620,100+20*i);
+    }
+
+}
+
+int cartfunc(INFO (*t)[16])
+{
+    int num = 0;
+
+    clrmous(MouseX, MouseY);
+    cleardevice();
+    draw_cartlist();
+    mouseinit();
+    while(1)
+    {
+        newmouse(&MouseX, &MouseY, &press);
+
+        if(mouse_press(250,410,430,450) == 2) //确认购买
+        {
+            MouseS = 1;
+            num = 1;
+            continue;
+        }
+
+        else if(mouse_press(250,410,430,450) == 1) //确认购买
+        {
+            MouseS = 0;
+            continue;
+        }
+
+        else if(mouse_press(570,445,630,475) == 2) //返回
+        {
+            MouseS = 1;
+            num = 2;
+            continue;
+        }
+
+        else if(mouse_press(570,445,630,475) == 1) //返回
+        {
+            MouseS = 0;
+            return 5;
+        }
+        else
+        {
+            if(num != 0)
+            {
+                MouseS = 0;
+                num = 0;
+            }
+        }
+
+    }
+}

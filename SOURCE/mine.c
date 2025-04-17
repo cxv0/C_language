@@ -1,6 +1,12 @@
-#include "custom.h"
+#include "config.h"
+#include "mine.h"
 #include "config.h"
 #include "shop.h"
+#include "real_time.h"
+#include "order.h"
+#include "gtaccount.h"
+#include "Avatarfunc.h"
+#include "force_exit.h"
 
 extern float cost[20];
 extern int shuzi;
@@ -15,7 +21,7 @@ void mine_page()
     setfillstyle(SOLID_FILL, YELLOW);
     bar(10, 10, 150, 40); // 时间框
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(62, 12, 148, 38);
+    bar(12, 12, 148, 38);
 
     //绘制右上角头像
     circle(615, 25, 15);
@@ -50,15 +56,18 @@ void mine_page()
     puthz(477, 422, "我的", 32, 36, RED);
 }
 
-int minefunc(INFO t[16])
+int minefunc(INFO (*t)[16])
 {
-    char account[20] = "11111111";
+    char account[20];
     int num = 0;
+    int *avatar_state = 0;
+    int *click_able = 0;
     int i;
     unsigned char *m;
     unsigned char q=0;
     RECORD *rp = NULL;
     m=&q;
+    strcpy(account, output_account());
 
     clrmous(MouseX, MouseY);
     cleardevice();
@@ -68,7 +77,23 @@ int minefunc(INFO t[16])
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        real_time(m);
+        real_time(m, avatar_state);
+        draw_avatarpage(avatar_state, click_able);
+        Avatarfunc(click_able);
+        
+        if(forceexit == 1)
+        {
+            forceexit = 0;
+            return 1;
+        }
+        
+        if(*avatar_state == 2)
+        {
+            clrmous(MouseX, MouseY);
+            cleardevice();
+            mine_page();
+            real_time(m, avatar_state);
+        }
 
         if(mouse_press(477, 422, 628, 458) == 2) //我的框
         {
@@ -154,7 +179,7 @@ int minefunc(INFO t[16])
             new_record(rp, t);
             for(i = 0; i < 16; i ++)
             {
-                edit_record(rp, &t[i]);
+                edit_record(rp, *t + i);
             }
             add_record(ensure_record(rp));
             check_record_dat();
@@ -167,7 +192,7 @@ int minefunc(INFO t[16])
             }
             for(i=0;i<16;i++)
             {
-                t[i].num = 0;
+                t[0][i].num = 0;
             }
             total(t);
             continue;
@@ -188,7 +213,7 @@ int minefunc(INFO t[16])
 
 }
 
-float total(INFO t[16])
+float total(INFO (*t)[16])
 {
     int i,j;
     float k;
@@ -199,8 +224,8 @@ float total(INFO t[16])
 
     for(i=0;i<16;i++)
     {
-        j=t[i].num;
-        k=t[i].price;
+        j=t[0][i].num;
+        k=t[0][i].price;
         sum += j*k;
     }
     setcolor(WHITE);

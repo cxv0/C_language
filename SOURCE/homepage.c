@@ -1,5 +1,8 @@
 #include "config.h"
-#include "custom.h"
+#include "homepage.h"
+#include "real_time.h"
+#include "Avatarfunc.h"
+#include "force_exit.h"
 
 /******
 COPYRIGHT:  Jiang Yihan
@@ -19,9 +22,9 @@ void draw_homepage()
     setfillstyle(SOLID_FILL, LIGHTGRAY);
 
     setfillstyle(SOLID_FILL, YELLOW);
-    bar(60, 10, 150, 40); // Ê±¼ä¿ò
+    bar(10, 10, 150, 40); // Ê±¼ä¿ò
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(62, 12, 148, 38);
+    bar(12, 12, 148, 38);
 
     // »æÖÆËÑË÷¿ò
     bar(170, 10, 580, 40); // ËÑË÷¿ò
@@ -66,6 +69,8 @@ void draw_homepage()
 int homefunc()
 {
     int num=0;
+    int *avatar_state = 0;
+    int *click_able = 0;
     unsigned char *m;
     unsigned char q=0;
     m=&q;
@@ -78,7 +83,24 @@ int homefunc()
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        real_time(m);
+        draw_avatarpage(avatar_state, click_able);
+        Avatarfunc(click_able);
+        real_time(m, avatar_state);
+
+        if(forceexit == 1)
+        {
+            forceexit = 0;
+            return 1;
+        }
+
+        if(*avatar_state == 2)
+        {
+            clrmous(MouseX, MouseY);
+            cleardevice();
+            draw_homepage();
+            draw_line();
+            real_time(m, avatar_state);
+        }
     
         if(mouse_press(12, 422, 163, 458) == 2) //Ê×Ò³¿ò
         {

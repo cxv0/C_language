@@ -12,7 +12,7 @@
 #include "homepage.h"
 #include "real_time.h"
 #include "expressage.h"
-#include "hashtable.h"
+#include "husttable.h"
 #include "market.h"
 #include "order.h"
 #include "mine.h"

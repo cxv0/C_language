@@ -10,5 +10,6 @@
 #define package 4        //快递
 #define takeout 5        //外卖
 #define mine 6           //我的
+#define cart 7           //购物车
 
 #endif

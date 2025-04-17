@@ -1,5 +1,10 @@
 #include "config.h"
-#include "custom.h"
+#include "expressage.h"
+#include "husttable.h"
+#include "order.h"
+#include "real_time.h"
+#include "Avatarfunc.h"
+#include "force_exit.h"
 
 
 /******
@@ -10,6 +15,10 @@ DATE:      2025/3/9
 
 void draw_expage()
 {
+    char str[2];
+    str[0] = '1';
+    str[1] = '\0';
+
     setbkcolor(WHITE);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
@@ -31,7 +40,7 @@ void draw_expage()
     floodfill(615, 35, LIGHTGRAY);
 
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(10, 60, 630, 400);
+    bar(10, 60, 630, 410);
 
     setfillstyle(SOLID_FILL, LIGHTGREEN);
     bar(80, 360, 260, 400); //一键待取
@@ -44,6 +53,14 @@ void draw_expage()
     
     setfillstyle(SOLID_FILL, WHITE);
     bar(340, 380, 360, 400); //加页
+
+    setcolor(RED);
+    line(297,383,283,390);
+    line(297,397,283,390);
+
+    setcolor(RED);
+    line(343,383,357,390);
+    line(343,397,357,390);
 
 
     // 绘制底部菜单栏
@@ -68,13 +85,18 @@ void draw_expage()
     puthz(20,60,"快递名称",32,36,WHITE);
     puthz(220,60,"寄存点",32,36,WHITE);
     puthz(420,60,"单号",32,36,WHITE);
+
+    settextstyle(TRIPLEX_FONT, HORIZ_DIR, 1);
+    outtextxy(315,380,str);
 }
 
-int expagefunc(ADMINHASH *hash)
+int expagefunc(ADMINHUST *hust)
 {
     int num=0;
     int page = 1;
     int state = 1;
+    int *avatar_state = 0;
+    int *click_able = 0;
     unsigned char *m;
     unsigned char q=0;
     m=&q;
@@ -82,14 +104,29 @@ int expagefunc(ADMINHASH *hash)
     clrmous(MouseX, MouseY);
     cleardevice();
     draw_expage();
-    output(hash, page, &state);
-
-    
+    output(hust, page, &state);  
     
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        real_time(m);
+        real_time(m, avatar_state);
+        draw_avatarpage(avatar_state, click_able);
+        Avatarfunc(click_able);
+
+        if(forceexit == 1)
+        {
+            forceexit = 0;
+            return 1;
+        }
+        
+        if(*avatar_state == 2)
+        {
+            clrmous(MouseX, MouseY);
+            cleardevice();
+            draw_expage();
+            real_time(m, avatar_state);
+            output(hust, page, &state);
+        }
 
         if(mouse_press(167, 422, 318, 458) == 2) //快递框
         {
@@ -168,8 +205,8 @@ int expagefunc(ADMINHASH *hash)
         {
             MouseS = 0;
             clrmous(MouseX,MouseY);
-            delstuff(hash);
-            inredraw(page,hash,&state);
+            delstuff(hust);
+            inredraw(page,hust,&state);
             continue;
         }
         
@@ -187,8 +224,8 @@ int expagefunc(ADMINHASH *hash)
         {
             MouseS = 0;
             clrmous(MouseX,MouseY);
-            addstuff(hash);
-            inredraw(page,hash,&state);
+            addstuff(hust);
+            inredraw(page,hust,&state);
             continue;
         }
 
@@ -213,7 +250,7 @@ int expagefunc(ADMINHASH *hash)
                 {
                     page--;
                     clrmous(MouseX, MouseY);
-                    inredraw(page,hash,&state);
+                    inredraw(page,hust,&state);
                 }
             }
         }
@@ -232,7 +269,7 @@ int expagefunc(ADMINHASH *hash)
             {
                 page++;
                 clrmous(MouseX, MouseY);
-                inredraw(page,hash,&state);
+                inredraw(page,hust,&state);
             }
         }
 
@@ -251,7 +288,7 @@ int expagefunc(ADMINHASH *hash)
 
 
 
-void delstuff(ADMINHASH *hash)
+void delstuff(ADMINHUST *hust)
 {
     char name[20];
 
@@ -283,6 +320,7 @@ void delstuff(ADMINHASH *hash)
     setfillstyle(SOLID_FILL, LIGHTGRAY);
     bar(250, 195, 500, 220);
 
+    mouseinit();
     while (1)
     {
         newmouse(&MouseX, &MouseY, &press);
@@ -293,7 +331,7 @@ void delstuff(ADMINHASH *hash)
         else if (mouse_press(430, 320, 515, 355) == 1)
         {
             MouseS = 0;
-            if (HashSearch(hash, name) == NULL)
+            if (HustSearch(hust, name) == NULL)
             {
                 setfillstyle(SOLID_FILL, CYAN);
                 bar(130, 320, 400, 355);
@@ -302,7 +340,7 @@ void delstuff(ADMINHASH *hash)
             }
             else
             {
-                Hashdelete(hash, name);
+                Hustdelete(hust, name);
                 setfillstyle(SOLID_FILL, CYAN);
                 bar(130, 320, 400, 355);
                 puthz(140, 320, "完成", 32, 36, RED);
@@ -339,9 +377,20 @@ void delstuff(ADMINHASH *hash)
 }
 
 
-void addstuff(ADMINHASH *hash)
+void addstuff(ADMINHUST *hust)
 {
     ADMINOB *object;
+    int i;
+    char s[2],number[11];
+    srand(time(0));
+    s[0] = '0' + (rand()%10);
+    s[1] = '\0';
+    for(i = 0;i < 10;i++)
+    {
+        number[i] = '0' + (rand()%10);
+    }
+    number[10] = '\0';
+
 
     setfillstyle(SOLID_FILL, CYAN);
     bar(100, 80, 540, 400);
@@ -377,6 +426,7 @@ void addstuff(ADMINHASH *hash)
 
     memset(object, 0, sizeof(ADMINOB));
 
+    mouseinit();
     delay(500);
     while (1)
     {
@@ -390,8 +440,10 @@ void addstuff(ADMINHASH *hash)
             MouseS = 0;
             clrmous(MouseX, MouseY);
             num_input(object->name,160,140,520,170,15);
-            strcpy(object->place,"yunyuan1dong");
-            strcpy(object->number,"1234567890");
+            strcpy(object->place,"yunyuan");
+            strcat(object->place,s);
+            strcat(object->place,"dong");
+            strcpy(object->number,number);
         }
 
         
@@ -404,7 +456,7 @@ void addstuff(ADMINHASH *hash)
         {
             if (strlen(object->name) != 0 )
             {
-                Hashinsert(hash, object);
+                Hustinsert(hust, object);
                 puthz(120, 360, "完成", 16, 16, RED);
                 delay(1000);
                 setfillstyle(SOLID_FILL, CYAN);
@@ -436,8 +488,10 @@ void addstuff(ADMINHASH *hash)
 }
 
 
-void inredraw(int page, ADMINHASH *hash, int *state)
+void inredraw(int page, ADMINHUST *hust, int *state)
 {
+    char str[2];
+
     setbkcolor(WHITE);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
@@ -454,7 +508,7 @@ void inredraw(int page, ADMINHASH *hash, int *state)
     floodfill(615, 35, LIGHTGRAY);
 
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(10, 60, 630, 400);
+    bar(10, 60, 630, 410);
 
     setfillstyle(SOLID_FILL, LIGHTGREEN);
     bar(80, 360, 260, 400); //一键待取
@@ -467,6 +521,14 @@ void inredraw(int page, ADMINHASH *hash, int *state)
     
     setfillstyle(SOLID_FILL, WHITE);
     bar(340, 380, 360, 400); //加页
+
+    setcolor(RED);
+    line(297,383,283,390);
+    line(297,397,283,390);
+
+    setcolor(RED);
+    line(343,383,357,390);
+    line(343,397,357,390);
 
     // 绘制底部菜单栏
     setfillstyle(SOLID_FILL, YELLOW);
@@ -491,5 +553,19 @@ void inredraw(int page, ADMINHASH *hash, int *state)
     puthz(220,60,"寄存点",32,36,WHITE);
     puthz(420,60,"单号",32,36,WHITE);
 
-    output(hash, page, state);
+    settextstyle(TRIPLEX_FONT, HORIZ_DIR, 1);
+    if(page == 2)
+    {
+        str[0] = '2';
+        str[1] = '\0';
+        outtextxy(315,380,str);
+    }
+    else 
+    {
+        str[0] = '1';
+        str[1] = '\0';
+        outtextxy(315,380,str);
+    }
+
+    output(hust, page, state);
 }

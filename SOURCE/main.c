@@ -1,21 +1,33 @@
 #include "config.h"
-#include "custom.h"
-
+#include "initmenu.h" 
+#include "regis.h"
+#include "login.h"
+#include "data.h"
+#include "input_pass.h"
+#include "user.h"
+#include "homepage.h"
+#include "real_time.h"
+#include "expressage.h"
+#include "husttable.h"
+#include "market.h"
+#include "order.h"
+#include "mine.h"
+#include "force_exit.h"
 
 float cost[20] = {0};
 int shuzi = 0;
-
+int forceexit = 0;
 
 void main()
 
 {
+	int huststate = 0;
 	int page = welcome;
-	int hashstate = 0;
 	int gdriver = VGA;
 	int gmode = VGAHI;
 
-	ADMINHASH *hash = NULL;
-	INFO t[16] = {
+	ADMINHUST *hust = NULL;
+	INFO q[16] = {
 		{1,1.0,0},
 		{2,2.0,0},
 		{3,3.0,0},
@@ -33,12 +45,14 @@ void main()
 		{15,15.0,0},
 		{16,16.0,0},
 		};
+	INFO *t = NULL;
 
-	initgraph(&gdriver, &gmode, "C:\\BORLANDC\\BGI"); 
-
-
-	hash = InitHash(30);
+	initgraph(&gdriver, &gmode, "C:\\BORLANDC\\BGI");
 	mouseinit();
+
+	t = q;
+	hust = InitHust(30);
+
 
 	while (1)
 	{
@@ -61,12 +75,12 @@ void main()
 			break;
 
 		case package:
-			if (hashstate == 0)
+			if (huststate == 0)
 			{
-				hashinput(hash);
-				hashstate = 1;
+				hustinput(hust);
+				huststate = 1;
 			}
-			page = expagefunc(hash);
+			page = expagefunc(hust);
 			break;
 		
 		case takeout:

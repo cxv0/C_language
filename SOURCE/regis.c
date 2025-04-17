@@ -1,5 +1,7 @@
 #include"config.h"
-#include"custom.h"
+#include"data.h"
+#include"regis.h"
+#include"input_pass.h"
 
 void regis_page()
 {

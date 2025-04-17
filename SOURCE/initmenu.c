@@ -1,5 +1,5 @@
 #include "config.h"
-#include "custom.h"
+#include "initmenu.h"
 
 
 /******

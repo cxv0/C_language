@@ -1,5 +1,6 @@
-#include"config.h"
-#include"custom.h"
+#include "config.h"
+#include"data.h"
+#include "user.h"
 
 void data(char* num1, char* num2)           //将新注册的用户信息写入文�?
 {
