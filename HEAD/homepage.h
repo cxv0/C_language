@@ -2,6 +2,7 @@
 #define _homepage_h_
 
 void draw_homepage(void);
-void homefunc(int *page, int *num);
+int homefunc(void);
+void draw_line(void);
 
 #endif

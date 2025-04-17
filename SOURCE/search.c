@@ -7,7 +7,7 @@ FUNCTION:   Search goods wanted
 DATE:       2025/3/20
 ******/
 
-void refrash(char *ptr) //输入文件名,清空对应文件并返回指针
+void refresh(char *ptr) //输入文件名,清空对应文件并返回指针
 {
     FILE *fp;
     char file_path[255];
@@ -25,10 +25,11 @@ void refrash(char *ptr) //输入文件名,清空对应文件并返回指针
 
 info *searchfunc(long code)
 { //返回对应的info结构体指针
-    FILE *fp = fopen("C:\\code\\TEXT\\database.dat", "rb");
+    FILE *fp, *search_result;
+    fp = fopen("C:\\code\\TEXT\\database.dat", "rb");
     char str[10] = "searchrs";
-    refrash(str);
-    FILE *search_result = fopen("C:\\code\\TEXT\\searchrs.dat", "a+"); //该.dat文件存放搜索结果
+    refresh(str);
+    search_result = fopen("C:\\code\\TEXT\\searchrs.dat", "a+"); //该.dat文件存放搜索结果
     info *ip = NULL;
     int i = 0;
     rewind(fp);

@@ -63,141 +63,114 @@ int Judge_Login(char* a, char* p)
 }
 
 
-void login_fun(int *page,int *num)
+int login_fun()
 {
 	char num1[20],num2[20];
+	int num=0;
+	
+	clrmous(MouseX,MouseY);
+	cleardevice();
+	login_page();
 	while(1)
 	{
-		if(*page==1)
+		newmouse(&MouseX,&MouseY,&press);
+		if(mouse_press(230,150,430,174)==1)
 		{
-			clrmous(MouseX,MouseY);
-			cleardevice();
-			login_page();
+			MouseS=0;
+			num1[0]='\0';
+			setfillstyle(1,LIGHTGRAY);
+			bar(230,150,430,174);
+			Input_Vis(num1,230,150,8,LIGHTGRAY);
+		}
 
-			while(*page==1)
+		else if(mouse_press(230,250,430,274)==1)
+		{
+			MouseS=0;
+			num2[0]='\0';
+			setfillstyle(1,LIGHTGRAY);
+			bar(230,250,430,274);
+			Input_Invis(num2,230,250,8,LIGHTGRAY);
+		}
+
+		else if(mouse_press(560,430,620,460)==2)
+		{
+			
+			if(num == 0)
 			{
-				newmouse(&MouseX,&MouseY,&press);
-				if(mouse_press(230,150,430,174)==1)
-				{
-					MouseS=0;
-					num1[0]='\0';
-					setfillstyle(1,LIGHTGRAY);
-					bar(230,150,430,174);
-					Input_Vis(num1,230,150,8,LIGHTGRAY);
-				}
-		
-				else if(mouse_press(230,250,430,274)==1)
-				{
-					num2[0]='\0';
-					setfillstyle(1,LIGHTGRAY);
-					bar(230,250,430,274);
-					Input_Invis(num2,230,250,8,LIGHTGRAY);
-				}
+				MouseS=1;
+				num = 3;
+			}
+			continue;
+		}
 
-				else if(mouse_press(560,430,620,460)==2)
-				{
-					MouseS=1;
-					if(*num == 0)
-                    {
-                        *num = 3;
-                        hlbutton(page, num);
-                    }
-					continue;
-				}
-		
-				else if(mouse_press(560,430,620,460)==1)
-				{
-                    *num = 3;
-                    *page = 0;
-                    break;
-				}
+		else if(mouse_press(560,430,620,460)==1)
+		{
+			MouseS=0;
+			return 0;
+		}
 
-				else if(mouse_press(220, 330, 280, 360) == 2)
-				{
-					MouseS=1;
-					if(*num == 0)
-                    {
-                        *num = 1;
-                        *page = 1;
-                        hlbutton(page, num);
-                    }
-					continue;
-				}
-		
-				else if(mouse_press(220, 330, 280, 360) == 1)
-				{
-					num1[0] = '\0';
-					num2[0] = '\0';
-                    *num = 1;
-                    *page = 1;
-                    break;
-				}
+		else if(mouse_press(220, 330, 280, 360) == 2)
+		{
+			
+			if(num == 0)
+			{
+				MouseS=1;
+				num = 1;
+			}
+			continue;
+		}
 
-				else if(mouse_press(330, 330, 390, 360) == 2)
-				{
-					MouseS=1;
-					if(*num == 0)
-                    {
-                        *num = 2;
-                        *page = 1;
-                        hlbutton(page, num);
-                    }
-					continue;
-				}
-		
-				else if(mouse_press(330, 330, 390, 360) == 1)
-				{
-					*num = 2;
-                    *page = 1;
-					if (Judge_Login(num1,num2))
-					{
-						setfillstyle(1, WHITE);
-						bar(270, 225, 410, 255);
-						puthz(270,225,"µÇÂ¼³É¹¦",32,36,GREEN);
-						create_user_info(num1);
-						delay(1000); 
-						*page=3;                                    
-						break;
-					}
-					else
-					{
-						setfillstyle(1, DARKGRAY);
-						bar(270, 225, 410, 255);
-						puthz(270,225,"ÃÜÂë´íÎó",32,36,GREEN);
-						delay(1000);
-						break;
-					}
-				}
-		
-				else
-				{
-					MouseS = 0;
-                    if(*num != 0)
-                    {
-                        repaint(page, num);
-                        *num = 0;
-                    }
-                    continue;
-				}
+		else if(mouse_press(220, 330, 280, 360) == 1)
+		{
+			num1[0] = '\0';
+			num2[0] = '\0';
+			MouseS=0;
+			setfillstyle(1,LIGHTGRAY);
+			bar(230,150,430,174);
+			bar(230,250,430,274);
+			continue;
+		}
+
+		else if(mouse_press(330, 330, 390, 360) == 2)
+		{
+			
+			if(num == 0)
+			{
+				MouseS=1;
+				num = 2;
+			}
+			continue;
+		}
+
+		else if(mouse_press(330, 330, 390, 360) == 1)
+		{
+			if (Judge_Login(num1,num2))
+			{
+				setfillstyle(1, WHITE);
+				bar(270, 225, 410, 255);
+				puthz(270,225,"µÇÂ¼³É¹¦",32,36,GREEN);
+				delay(1000);                                  
+				return 3;
+			}
+			else
+			{
+				setfillstyle(1, DARKGRAY);
+				bar(270, 225, 410, 255);
+				puthz(270,225,"ÃÜÂë´íÎó",32,36,GREEN);
+				delay(1000);
+				return 1;
 			}
 		}
 
-		else if(*page==0)
+		else
 		{
-			clrmous(MouseX, MouseY);
-            cleardevice();
-			initmenu(page,num);
-            break;
+			if(num != 0)
+			{
+				MouseS = 0;
+				num = 0;
+			}
+			continue;
 		}
-
-		else if(*page == 3)  //ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò³
-        {   
-			clrmous(MouseX, MouseY);
-			cleardevice();
-			homefunc(page,num);
-            break;
-        }
-
 	}
  }
 
@@ -222,7 +195,5 @@ void login_fun(int *page,int *num)
 	puthz(330,330,"Íê³É",24,28,WHITE);
 	puthz(560,430,"·µ»Ø",24,28,WHITE);
  }
-
- 
 	
-
+ 

@@ -22,9 +22,9 @@ void real_time(unsigned char *m)
         setcolor(LIGHTGRAY);
         setlinestyle(SOLID_LINE, 0, 1);
         setfillstyle(SOLID_FILL, YELLOW);
-        bar(10, 10, 150, 40); // 时间框
+        bar(10, 10, 157, 40); // 时间框
         setfillstyle(SOLID_FILL, LIGHTGRAY);
-        bar(12, 12, 148, 38);
+        bar(12, 12, 155, 38);
 
         // 设置时间文本颜色
         setcolor(BLACK);

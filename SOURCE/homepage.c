@@ -7,6 +7,10 @@ FUNCTION:   Homepage function //首页
 DATE:       2025/3/4
 ******/
 
+
+extern float cost[20];
+extern int shuzi;
+
 void draw_homepage()
 {
     setbkcolor(WHITE);
@@ -15,9 +19,9 @@ void draw_homepage()
     setfillstyle(SOLID_FILL, LIGHTGRAY);
 
     setfillstyle(SOLID_FILL, YELLOW);
-    bar(10, 10, 150, 40); // 时间框
+    bar(60, 10, 150, 40); // 时间框
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(12, 12, 148, 38);
+    bar(62, 12, 148, 38);
 
     // 绘制搜索框
     bar(170, 10, 580, 40); // 搜索框
@@ -36,10 +40,7 @@ void draw_homepage()
     bar(12, 62, 148, 398);
 
     // 绘制右侧消费情况
-    setfillstyle(SOLID_FILL, YELLOW);
     bar(170, 60, 630, 400); // 消费情况
-    setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(172, 62, 628, 398);
 
     // 绘制底部菜单栏
     setfillstyle(SOLID_FILL, YELLOW);
@@ -62,113 +63,125 @@ void draw_homepage()
 
 
 
-void homefunc(int *page, int *num)
+int homefunc()
 {
-    unsigned char q = 0;
+    int num=0;
     unsigned char *m;
-    m = &q;
+    unsigned char q=0;
+    m=&q;
 
-    if(*page == 3)
+    clrmous(MouseX, MouseY);
+    cleardevice();
+    draw_homepage();
+    draw_line();
+
+    while(1)
     {
-        clrmous(MouseX, MouseY);
-        cleardevice();
-        draw_homepage();
-
-        while(1)
+        newmouse(&MouseX, &MouseY, &press);
+        real_time(m);
+    
+        if(mouse_press(12, 422, 163, 458) == 2) //首页框
         {
-            newmouse(&MouseX, &MouseY, &press);
-            real_time(m);
-        
-            if(mouse_press(12, 422, 163, 458) == 2) //首页框
-            {
-                MouseS = 1;
-                *num = 1;
-                continue;
-            }
+            MouseS = 1;
+            num = 1;
+            continue;
+        }
 
-            else if(mouse_press(12, 422, 163, 458) == 1) //首页框
-            {
-                MouseS = 1;
-                *num = 1;
-                continue;
-            }
+        else if(mouse_press(12, 422, 163, 458) == 1) //首页框
+        {
+            MouseS = 0;
+            continue;
+        }
 
-            else if(mouse_press(167, 422, 318, 458) == 2) //快递框
+        else if(mouse_press(167, 422, 318, 458) == 2) //快递框
+        {
+            
+            if(num == 0)
             {
                 MouseS = 1;
-                if(*num == 0)
-                {
-                    *num = 2;
-                    *page = 3;
-                    hlbutton(page, num);
-                }
-                continue;
+                num = 2;
             }
+            continue;
+        }
 
-            else if(mouse_press(167, 422, 318, 458) == 1) //快递框
-            {
-                MouseS = 1;
-                *num = 2;
-                *page = 4;
-                break;
-            }
+        else if(mouse_press(167, 422, 318, 458) == 1) //快递框
+        {
+            MouseS = 0;
+            return 4;
+        }
 
-            else if(mouse_press(322, 422, 473, 458) == 2) //外卖框
+        else if(mouse_press(322, 422, 473, 458) == 2) //外卖框
+        {
+            
+            if(num == 0)
             {
                 MouseS = 1;
-                if(*num == 0)
-                {
-                    *num = 3;
-                    *page = 3;
-                    hlbutton(page, num);
-                }
-                continue;
+                num = 3;
             }
+            continue;
+        }
 
-            else if(mouse_press(322, 422, 473, 458) == 1) //外卖框
-            {
-                MouseS = 1;
-                *num = 3;
-                *page = 5;
-                break;
-            }
+        else if(mouse_press(322, 422, 473, 458) == 1) //外卖框
+        {
+            MouseS = 0;
+            return 5;
+        }
 
-            else if(mouse_press(477, 422, 628, 458) == 2) //我的框
+        else if(mouse_press(477, 422, 628, 458) == 2) //我的框
+        {
+           
+            if(num == 0)
             {
                 MouseS = 1;
-                if(*num == 0)
-                {
-                    *num = 4;
-                    *page = 3;
-                    hlbutton(page, num);
-                }
-                continue;
+                num = 4;
             }
+            continue;
+        }
 
-            else if(mouse_press(477, 422, 628, 458) == 1) //我的框
-            {
-                MouseS = 1;
-                *num = 4;
-                *page = 6;
-                break;
-            }
-               
-            else
+        else if(mouse_press(477, 422, 628, 458) == 1) //我的框
+        {
+            MouseS = 0;
+            return 6;
+        }
+           
+        else
+        {
+            
+            if(num != 0)
             {
                 MouseS = 0;
-                if(*num != 0)
-                {
-                    repaint(page, num);
-                    *num = 0;
-                }
-                continue;
+                num = 0;
             }
+            continue;
         }
     }
 
-    if(*page == 4) //不用elseif是因为这样会跳过执行其他elseif语句
+}
+
+
+
+
+
+void draw_line()
+{
+    int i,temp,num1,num2;
+    temp = shuzi;
+    setcolor(RED);
+    if(temp > 0)
     {
-        expagefunc(page, num);
+        for(i=0;i<temp;i++)
+        {
+            num1 = cost[i];
+            if(i == 0)
+            {
+                num2 = 0;
+            }
+            if(i!=0)
+            {
+                num2 = cost[i - 1];
+            }
+            line(170 + ((460 / (temp + 1)) * i), 400 - (num2/2), 170 + ((460 / (temp + 1)) * (i + 1)), 400 - (num1/2));
+        }
     }
     
 }

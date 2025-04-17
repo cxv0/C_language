@@ -1,7 +1,7 @@
 #ifndef _regis_h_
 #define _regis_h_
 
-void regis_fun(int *page, int *num);
+int regis_fun(void);
 void regis_page(void);
 
 #endif
