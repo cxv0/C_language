@@ -66,7 +66,7 @@ int Judge_Login(char* a, char* p)
 }
 
 
-int login_fun()
+int login_fun(INFO (*t)[16])
 {
 	char num1[20],num2[20];
 	int num=0;
@@ -155,6 +155,7 @@ int login_fun()
 				bar(270, 225, 410, 255);
 				puthz(270,225,"µÇÂ¼³É¹¦",32,36,GREEN);
 				get_acc_to_dat(num1);
+				clear_cart(t);
 				delay(1000);                                  
 				return 3;
 			}

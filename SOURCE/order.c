@@ -3,8 +3,12 @@
 #include "market.h"
 #include "real_time.h"
 #include "shop.h"
-#include "Avatarfunc.h"
+#include "mine.h"
 #include "force_exit.h"
+#include "gtaccount.h"
+
+extern float cost[20];
+extern int shuzi;
 
 #define SENSITIVITY 75 //点击灵敏度,75左右较合适
 
@@ -16,7 +20,7 @@ DATE:       2025/3/29
 
 void draw_order_management_page()
 {
-    setbkcolor(WHITE);
+    setbkcolor(CYAN);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
@@ -322,11 +326,9 @@ void draw_cartbutton() //绘制购物车按钮
 
 int orderfunc(INFO (*t)[16])
 {
-
     int num = 0, order_page = 1, event_click = 0;
     int i = 0, j = 0;
-    int *avatar_state = 0;
-    int *click_able = 0;
+    int f = 0; //f仅仅是用来给real_time传入一个指向0的指针
     int buy_num[16] = {0};
     int *orderpage = &order_page;
     unsigned char *m;
@@ -343,25 +345,12 @@ int orderfunc(INFO (*t)[16])
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        real_time(m, avatar_state);
-        draw_avatarpage(avatar_state, click_able);
-        Avatarfunc(click_able);
-
+        real_time(m, &f);
+        
         if(forceexit == 1)
         {
             forceexit = 0;
-            return 1;
-        }
-        
-        if(*avatar_state == 2)
-        {
-            clrmous(MouseX, MouseY);
-            cleardevice();
-            draw_order_management_page();
-            draw_setpage(orderpage);
-            switch_show_orderpage(orderpage);
-            draw_cartbutton();
-            real_time(m, avatar_state);
+            return 5;
         }
 
         if(mouse_press(322, 422, 473, 458) == 2) //外卖框
@@ -513,13 +502,12 @@ void draw_cartlist()
     bar(250,410,430,450);
     bar(570,445,630,475);
 
-    
     puthz(10,20,"商品名称",32,36,RED);
     puthz(300,20,"价格",32,36,RED);
     puthz(560,20,"数量",32,36,RED);
-    // puthz(540,400,"总价",24,28,RED);
-    // puthz(280,415,"确认购买",24,28,WHITE);
-    // puthz(570,445,"返回",24,28,WHITE);
+    puthz(500,400,"总价",24,28,RED);
+    puthz(280,415,"确认购买",24,28,WHITE);
+    puthz(570,445,"返回",24,28,WHITE);
 
     setcolor(RED);
     setlinestyle(SOLID_LINE, 0, 1);
@@ -532,16 +520,35 @@ void draw_cartlist()
 
 int cartfunc(INFO (*t)[16])
 {
+    char account[20];
     int num = 0;
+    int i;
+    int save_able = 0;
+    RECORD temp;
+    RECORD *rp = &temp;
+
+    strcpy(account, output_account());
+    for(i = 0; i < 16; i ++)
+    {
+        rp->num[i] = 0;
+    }
+    rp->sum = 0;
 
     clrmous(MouseX, MouseY);
     cleardevice();
     draw_cartlist();
-    mouseinit();
+    check_record_dat();
+
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
 
+        for(i = 0; i < 16; i ++)
+        {
+            edit_record(rp, *t + i);
+        }
+        output_to_screen(rp);
+        
         if(mouse_press(250,410,430,450) == 2) //确认购买
         {
             MouseS = 1;
@@ -552,7 +559,37 @@ int cartfunc(INFO (*t)[16])
         else if(mouse_press(250,410,430,450) == 1) //确认购买
         {
             MouseS = 0;
-            continue;
+            cost[shuzi] = total(t);
+            shuzi++;
+
+            save_able = 0;
+            for(i = 0; i < 16; i ++)
+            {
+                if(rp->num[i] != 0) //当购物数量全为0则不写入此次记录
+                {
+                    save_able = 1;
+                }
+            }
+            
+            if(save_able == 1)
+            {
+                rp->state = 1;
+                add_record(rp);
+            }
+            
+            if(shuzi == 20)
+            {
+                shuzi = 0;
+            }
+
+            for(i = 0; i < 16; i ++)
+            {
+                (*t + i)->num = 0;
+            }
+
+            rp->state = -1;
+            forceexit = 1;
+            return 5;
         }
 
         else if(mouse_press(570,445,630,475) == 2) //返回
@@ -565,16 +602,18 @@ int cartfunc(INFO (*t)[16])
         else if(mouse_press(570,445,630,475) == 1) //返回
         {
             MouseS = 0;
+            forceexit = 1;
             return 5;
         }
-        else
-        {
-            if(num != 0)
-            {
-                MouseS = 0;
-                num = 0;
-            }
-        }
 
+    }
+}
+
+void clear_cart(INFO (*t)[16])
+{
+    int i;
+    for(i = 0; i < 16; i++)
+    {
+        (*t)[i].num = 0;
     }
 }

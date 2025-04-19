@@ -8,9 +8,6 @@
 #include "Avatarfunc.h"
 #include "force_exit.h"
 
-extern float cost[20];
-extern int shuzi;
-
 void mine_page()
 {
     setbkcolor(WHITE);
@@ -33,9 +30,6 @@ void mine_page()
     setfillstyle(SOLID_FILL, LIGHTGRAY);
     bar(10, 60, 630, 400);
 
-    setfillstyle(SOLID_FILL, GREEN);
-    bar(200,240,280,280);
-
     // 绘制底部菜单栏
     setfillstyle(SOLID_FILL, YELLOW);
     bar(10, 420, 165, 460); // 首页
@@ -52,7 +46,6 @@ void mine_page()
     puthz(12, 422, "首页", 32, 36, WHITE);
     puthz(167, 422, "快递", 32, 36, WHITE);
     puthz(322, 422, "外卖", 32, 36, WHITE);
-    puthz(200, 240, "购买", 32, 36, WHITE);
     puthz(477, 422, "我的", 32, 36, RED);
 }
 
@@ -72,7 +65,6 @@ int minefunc(INFO (*t)[16])
     clrmous(MouseX, MouseY);
     cleardevice();
     mine_page();
-    total(t);
 
     while(1)
     {
@@ -158,46 +150,6 @@ int minefunc(INFO (*t)[16])
             return 5;
         }
         
-        else if(mouse_press(200,240,280,280) == 2)
-        {
-            if(num == 0)
-            {
-                MouseS = 1;
-                num = 5;
-            }
-            continue;
-        }
-
-        else if(mouse_press(200,240,280,280) == 1) //购买
-        {
-            MouseS = 0;
-            draw_page();
-            page_redraw();
-            cost[shuzi]=total(t);
-            shuzi++;
-            
-            new_record(rp, t);
-            for(i = 0; i < 16; i ++)
-            {
-                edit_record(rp, *t + i);
-            }
-            add_record(ensure_record(rp));
-            check_record_dat();
-            rp = output_record(account);
-            output_to_screen(rp);
-
-            if(shuzi == 20)
-            {
-                shuzi = 0;
-            }
-            for(i=0;i<16;i++)
-            {
-                t[0][i].num = 0;
-            }
-            total(t);
-            continue;
-        }
-
         else
         {
             
@@ -231,10 +183,7 @@ float total(INFO (*t)[16])
     setcolor(WHITE);
     memset(allsum, 0, sizeof(allsum));
     itoa(sum, allsum, 10);
-    setfillstyle(SOLID_FILL, BLUE);
-    bar(200,200,260,240); // 首页
-    settextstyle(TRIPLEX_FONT, HORIZ_DIR, 3);
-    outtextxy(200,200,allsum);
+    
     
 
     // if(sum < 10e-6)

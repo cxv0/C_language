@@ -11,6 +11,8 @@
 #include<conio.h>
 #include<dos.h>
 #include<time.h>
+#include<io.h>
+#include<fcntl.h>
 #include"HZ.H"
 #include"MOUSE.H"
 

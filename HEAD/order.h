@@ -3,8 +3,6 @@
 
 #define SENSITIVITY 75 //点击灵敏度,75左右较合适
 
-#include "shop.h"
-
 typedef struct info//物品信息
 {
     int NO; //物品名称
@@ -24,5 +22,6 @@ int orderfunc(INFO (*t)[16]);
 void draw_cartlist(void);
 void draw_cartbutton(void);
 int cartfunc(INFO (*t)[16]);
+void clear_cart(INFO (*t)[16]);
 
 #endif

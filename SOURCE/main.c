@@ -8,7 +8,7 @@
 #include "homepage.h"
 #include "real_time.h"
 #include "expressage.h"
-#include "husttable.h"
+#include "package.h"
 #include "market.h"
 #include "order.h"
 #include "mine.h"
@@ -26,7 +26,6 @@ void main()
 	int gdriver = VGA;
 	int gmode = VGAHI;
 
-	ADMINHUST *hust = NULL;
 	INFO q[16] = {
 		{1,1.0,0},
 		{2,2.0,0},
@@ -51,7 +50,6 @@ void main()
 	mouseinit();
 
 	t = q;
-	hust = InitHust(30);
 
 
 	while (1)
@@ -63,7 +61,7 @@ void main()
 			break;
 
 		case login:
-			page = login_fun();
+			page = login_fun(t);
 			break;
 
 		case regis:
@@ -75,12 +73,7 @@ void main()
 			break;
 
 		case package:
-			if (huststate == 0)
-			{
-				hustinput(hust);
-				huststate = 1;
-			}
-			page = expagefunc(hust);
+			page = expagefunc();
 			break;
 		
 		case takeout:

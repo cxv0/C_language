@@ -38,7 +38,6 @@ int cartfunc(INFO (*t)[16])
     clrmous(MouseX, MouseY);
     cleardevice();
     draw_cartlist();
-    // mouseinit();
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);

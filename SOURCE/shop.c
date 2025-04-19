@@ -1,6 +1,6 @@
-#include "shop.h"
 #include "config.h"
 #include "order.h"
+#include "shop.h"
 
 /******
 COPYRIGHT:  Jiang Yihan
@@ -13,8 +13,6 @@ void check_record_dat() //确保record.dat存在
     FILE *fp1 = fopen("C:\\CODE\\TEXT\\record.dat", "rb"), *fp2 = NULL;
     if(fp1 == NULL) //查找该用户信息是否已经存在，若不存在则创建
     {
-        printf("\nFile %s not exist!", "C:\\CODE\\TEXT\\record.dat");
-        printf("\nTry to create file %s!", "C:\\CODE\\TEXT\\record.dat");
         if((fp2 = fopen("C:\\CODE\\TEXT\\record.dat", "wb+")) == NULL)
         {
             printf("\nError on create file %s!", "C:\\CODE\\TEXT\\record.dat");
@@ -46,7 +44,7 @@ int count_userrecord() //计数record.dat中共有几个结构体
     return count;
 }
 
-RECORD *new_record(RECORD *rp, INFO *ip) //ip是数组指针,数组包含16个INFO结构体
+RECORD *new_record(RECORD *rp) //生成空白记录
 {
     int i = 0;
     check_record_dat();
@@ -55,11 +53,17 @@ RECORD *new_record(RECORD *rp, INFO *ip) //ip是数组指针,数组包含16个INFO结构体
 
     for(i = 0; i < 16; i++)
     {
-        rp->num[i] = ip[i].num;
-        rp->sum += ip[i].num * ip[i].price;
+        rp->num[i] = 0;
     }
 
     return rp;
+}
+
+void record_addnum(RECORD *rp, INFO *ip) //此处的ip是单个结构体指针,用于添加单独一种商品的数据而不能减少
+{
+    int i = ip->NO;
+    rp->num[i - 1] += ip->num;
+    rp->sum += ip->num * ip->price;
 }
 
 void edit_record(RECORD *rp, INFO *ip) //此处的ip是单个结构体指针,用于修改单独一种商品的数据
@@ -105,7 +109,7 @@ void add_record(RECORD *rp) //存储购买记录
     return;
 }
 
-RECORD *output_record(char *account) //输出历史记录
+RECORD *output_record(char *account) //输出历史记录指针
 {
     int i = 0, count = count_userrecord();
     int max_record = 1; //至多输出一次记录,可调
@@ -146,23 +150,33 @@ RECORD *output_record(char *account) //输出历史记录
 
 void output_to_screen(RECORD *rp)
 {
-    int i = 0, j = 0;
+    int i = 0;
+    int conut_zero = 0;
+    char goods_name[16][20] = {"商品一", "商品二", "商品三", "商品四", "商品五", "商品六", "商品七", "商品八", "商品九", "商品十", "商品十一", "商品十二", "商品十三", "商品十四", "商品十五", "商品十六"};
+    int price[16] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
     char str[10];
     RECORD temp = *rp;
     settextstyle(TRIPLEX_FONT, 0, 2);
 
-    for(i = 0;i < 1;i ++)
+    for(i = 0; i < 16; i ++)
     {
-        for(j = 0; j < 16; j ++)
-        {
-            str[0] = '\0';
-            itoa(temp.num[j], str, 10);
-            outtextxy(590, 55 + 20 * j, str);
-        }
         str[0] = '\0';
-        itoa(temp.sum, str, 10);
-        outtextxy(570, 375, str);
+        itoa(temp.num[i], str, 10);
+        if(temp.num[i] == 0)
+        {
+            conut_zero ++;
+        }
+        else
+        {
+            outtextxy(590, 75 + 1 + 20 * (i - conut_zero), str);
+            puthz(50, 75 + 7 + 20 * (i - conut_zero), goods_name[i], 16, 18, MAGENTA);
+            itoa(temp.num[i] * price[i], str, 10);
+            outtextxy(310, 75 + 1 + 20 * (i - conut_zero), str);
+        }
     }
+    str[0] = '\0';
+    itoa(temp.sum, str, 10);
+    outtextxy(555, 400, str);
 }
 
 /*int seek_init_userrecord(char *account, INFO *infp) //查找account对应结构体,没找到则新建用户名为account,其他项为空的结构体,并返回结构体数量;找到则返回位次i
