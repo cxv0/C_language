@@ -1,7 +1,7 @@
-#include"config.h"
+#include "config.h"
 #include "real_time.h"
 
-void real_time(unsigned char *m, int *avatar_state)
+void real_time(unsigned char *m, int *force_show)
 {
     time_t now;
     struct tm *local_time;
@@ -14,7 +14,7 @@ void real_time(unsigned char *m, int *avatar_state)
     // 格式化时间为字符串
     strftime(time_str, sizeof(time_str), "%m-%d %H:%M", local_time);
 
-     if(local_time->tm_min!=*m || *avatar_state == 2)
+     if(local_time->tm_min!=*m || *force_show == 1)
      {
         *m=local_time->tm_min;
 

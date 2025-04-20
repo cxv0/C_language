@@ -1,7 +1,6 @@
 #include "config.h"
 #include "package.h"
-
-
+#include "order.h"
 
 int addpackage()
 {
@@ -86,14 +85,14 @@ int addpackage()
 
                 if (file == NULL) 
                 {
-                    printf("Failed to open file");
+                    // printf("Failed to open file");
                     return 1;
                 }
 
                 // 将新结构体追加到文件
                 if (fwrite(&newPackage, sizeof(PACKAGE), 1, file) != 1) 
                 {
-                    printf("Failed to write to file");
+                    // printf("Failed to write to file");
                     fclose(file);
                     return 1;
                 }

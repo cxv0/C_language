@@ -49,7 +49,7 @@ void main()
 	initgraph(&gdriver, &gmode, "C:\\BORLANDC\\BGI");
 	mouseinit();
 
-	t = q;
+	t = &q;
 
 
 	while (1)

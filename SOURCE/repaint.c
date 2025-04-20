@@ -98,7 +98,7 @@ void repaint(int *page, int *num)  //重新绘制按钮
 
     else if(*page == 3) //首页
     {
-        setbkcolor(WHITE);
+        setbkcolor(CYAN);
         setfillstyle(SOLID_FILL, LIGHTGRAY);
 
         clrmous(MouseX, MouseY);
@@ -129,7 +129,7 @@ void repaint(int *page, int *num)  //重新绘制按钮
 
     else if(*page == 4) //快递页
     {
-        setbkcolor(WHITE);
+        setbkcolor(CYAN);
         setfillstyle(SOLID_FILL, LIGHTGRAY);
 
         clrmous(MouseX, MouseY);

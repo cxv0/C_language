@@ -1,7 +1,7 @@
 #ifndef _package_h_
 #define _package_h_
 
-typedef struct pack
+typedef struct
 {
 	char name[25];
     char place[25];

@@ -54,7 +54,9 @@
 #define NINE 0x0a39
 #define ZERO 0x0b30
 
-
+#define bool unsigned char
+#define true 1
+#define false 0
 
 #define welcome 0        //欢迎界面
 #define login 1          //用户登录界面

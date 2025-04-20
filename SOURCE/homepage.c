@@ -16,7 +16,7 @@ extern int shuzi;
 
 void draw_homepage()
 {
-    setbkcolor(WHITE);
+    setbkcolor(CYAN);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
@@ -69,10 +69,17 @@ void draw_homepage()
 int homefunc()
 {
     int num=0;
-    int *avatar_state = 0;
-    int *click_able = 0;
+    int avatar_state_val = 0;
+    int last_state_val = 0;
+    int click_able_val = 0;
+    int *avatar_state = &avatar_state_val;
+    int *last_state = &last_state_val;
+    int *click_able = &click_able_val;
+    int force_show = 1;
+    int not_force_show = 0;
     unsigned char *m;
     unsigned char q=0;
+    char str[20];
     m=&q;
 
     clrmous(MouseX, MouseY);
@@ -83,9 +90,7 @@ int homefunc()
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        draw_avatarpage(avatar_state, click_able);
-        Avatarfunc(click_able);
-        real_time(m, avatar_state);
+        real_time(m, &not_force_show);
 
         if(forceexit == 1)
         {
@@ -93,14 +98,43 @@ int homefunc()
             return 1;
         }
 
-        if(*avatar_state == 2)
+        if(mouse_press(600, 10, 630, 40) == 1)
         {
-            clrmous(MouseX, MouseY);
+            *avatar_state = 1;
+            MouseS = 1;
+        }
+
+        if(mouse_press(600, 10, 630, 40) == 3)
+        {
+            *avatar_state = 0;
+            *last_state = 0;
+            *click_able = 0;
             cleardevice();
             draw_homepage();
             draw_line();
-            real_time(m, avatar_state);
+            real_time(m, &force_show);
+            MouseS = 1;
+            continue;
         }
+
+        if(*avatar_state == 1 && *avatar_state != *last_state)
+        {
+            draw_avatarpage();
+            real_time(m, &force_show);
+            *click_able = 1;
+            *last_state = *avatar_state;
+        }
+
+        else if(*avatar_state != 1 && *avatar_state != *last_state)
+        {
+            cleardevice();
+            draw_homepage();
+            draw_line();
+            *click_able = 0;
+            *last_state = *avatar_state;
+        }
+
+        Avatarfunc(click_able);
     
         if(mouse_press(12, 422, 163, 458) == 2) //Ê×Ò³¿ò
         {

@@ -3,11 +3,11 @@
 #include "package.h"
 #include "order.h"
 #include "real_time.h"
+#include "force_exit.h"
 #include "Avatarfunc.h"
 
-
 /******
-COPYRIGHT: Jiang Yihan
+COPYRIGHT: Jiang Yihan & Hu Yizhuo
 FUNCTION:  Expressage function //快递界面
 DATE:      2025/3/9
 ******/
@@ -15,7 +15,7 @@ DATE:      2025/3/9
 void draw_expage()
 {
 
-    setbkcolor(WHITE);
+    setbkcolor(CYAN);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
@@ -74,7 +74,14 @@ void draw_expage()
 int expagefunc()
 {
     int num = 0;
-    int *avatar_state = 0;
+    int avatar_state_val = 0;
+    int last_state_val = 0;
+    int click_able_val = 0;
+    int *avatar_state = &avatar_state_val;
+    int *last_state = &last_state_val;
+    int *click_able = &click_able_val;
+    int force_show = 1;
+    int not_force_show = 0;
     unsigned char *m;
     unsigned char q=0;
     m=&q;
@@ -88,8 +95,51 @@ int expagefunc()
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        real_time(m, avatar_state);
+        real_time(m, &not_force_show);
         
+        if(forceexit == 1)
+        {
+            forceexit = 0;
+            return 1;
+        }
+
+        if(mouse_press(600, 10, 630, 40) == 1)
+        {
+            *avatar_state = 1;
+            MouseS = 1;
+        }
+
+        if(mouse_press(600, 10, 630, 40) == 3)
+        {
+            *avatar_state = 0;
+            *last_state = 0;
+            *click_able = 0;
+            cleardevice();
+            draw_expage();
+            output_package();
+            real_time(m, &force_show);
+            MouseS = 1;
+            continue;
+        }
+
+        if(*avatar_state == 1 && *avatar_state != *last_state)
+        {
+            draw_avatarpage();
+            real_time(m, &force_show);
+            *click_able = 1;
+            *last_state = *avatar_state;
+        }
+
+        else if(*avatar_state != 1 && *avatar_state != *last_state)
+        {
+            cleardevice();
+            draw_expage();
+            output_package();
+            *click_able = 0;
+            *last_state = *avatar_state;
+        }
+
+        Avatarfunc(click_able);
 
         if(mouse_press(167, 422, 318, 458) == 2) //快递框
         {
@@ -170,7 +220,7 @@ int expagefunc()
             clrmous(MouseX,MouseY);
             delpackage();
             inredraw();
-            real_time(m, avatar_state);
+            real_time(m, &not_force_show);
             continue;
         }
         
@@ -190,7 +240,7 @@ int expagefunc()
             clrmous(MouseX,MouseY);
             addpackage();
             inredraw();
-            real_time(m, avatar_state);
+            real_time(m, &not_force_show);
             continue;
         }
 
@@ -258,7 +308,7 @@ int expagefunc()
 void inredraw()
 {
 
-    setbkcolor(WHITE);
+    setbkcolor(CYAN);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
     setfillstyle(SOLID_FILL, LIGHTGRAY);

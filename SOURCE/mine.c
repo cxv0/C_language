@@ -1,16 +1,14 @@
 #include "config.h"
-#include "mine.h"
-#include "config.h"
 #include "shop.h"
 #include "real_time.h"
-#include "order.h"
 #include "gtaccount.h"
 #include "Avatarfunc.h"
 #include "force_exit.h"
+#include "mine.h"
 
 void mine_page()
 {
-    setbkcolor(WHITE);
+    setbkcolor(CYAN);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
@@ -53,15 +51,21 @@ int minefunc(INFO (*t)[16])
 {
     char account[20];
     int num = 0;
-    int *avatar_state = 0;
-    int *click_able = 0;
     int i;
+    int avatar_state_val = 0;
+    int last_state_val = 0;
+    int click_able_val = 0;
+    int *avatar_state = &avatar_state_val;
+    int *last_state = &last_state_val;
+    int *click_able = &click_able_val;
+    int force_show = 1;
+    int not_force_show = 0;
     unsigned char *m;
     unsigned char q=0;
     RECORD *rp = NULL;
     m=&q;
-    strcpy(account, output_account());
 
+    strcpy(account, output_account());
     clrmous(MouseX, MouseY);
     cleardevice();
     mine_page();
@@ -69,23 +73,49 @@ int minefunc(INFO (*t)[16])
     while(1)
     {
         newmouse(&MouseX, &MouseY, &press);
-        real_time(m, avatar_state);
-        draw_avatarpage(avatar_state, click_able);
-        Avatarfunc(click_able);
+        real_time(m, &not_force_show);
         
         if(forceexit == 1)
         {
             forceexit = 0;
             return 1;
         }
-        
-        if(*avatar_state == 2)
+
+        if(mouse_press(600, 10, 630, 40) == 1)
         {
-            clrmous(MouseX, MouseY);
+            *avatar_state = 1;
+            MouseS = 1;
+        }
+
+        if(mouse_press(600, 10, 630, 40) == 3)
+        {
+            *avatar_state = 0;
+            *last_state = 0;
+            *click_able = 0;
             cleardevice();
             mine_page();
-            real_time(m, avatar_state);
+            real_time(m, &force_show);
+            MouseS = 1;
+            continue;
         }
+
+        if(*avatar_state == 1 && *avatar_state != *last_state)
+        {
+            draw_avatarpage();
+            real_time(m, &force_show);
+            *click_able = 1;
+            *last_state = *avatar_state;
+        }
+
+        else if(*avatar_state != 1 && *avatar_state != *last_state)
+        {
+            cleardevice();
+            mine_page();
+            *click_able = 0;
+            *last_state = *avatar_state;
+        }
+
+        Avatarfunc(click_able);
 
         if(mouse_press(477, 422, 628, 458) == 2) //ÎÒµÄ¿ò
         {
@@ -162,7 +192,6 @@ int minefunc(INFO (*t)[16])
         }
 
     }
-
 }
 
 float total(INFO (*t)[16])
@@ -211,7 +240,7 @@ void draw_page()
 
 void page_redraw()
 {
-    setbkcolor(WHITE);
+    setbkcolor(CYAN);
     setcolor(LIGHTGRAY);
     setlinestyle(SOLID_LINE, 0, 1);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
