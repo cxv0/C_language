@@ -62,7 +62,7 @@ void draw_map()
     lineto(100, 50);
 }
 
-void map_tracking(int StartX, int StartY, int EndX, int EndY)
+void map_tracking(int StartX, int StartY, int EndX, int EndY) //由于是从终点向起点画线,实际使用时起点在后,终点在前
 {
     int map[48][64];
     Point parent[48][64];
@@ -95,6 +95,7 @@ bool bfs(Point start, Point end, int maze[48][64], Point parent[48][64]) {
     int dx[] = {0, 1, 0, -1};
     int dy[] = {-1, 0, 1, 0};
     Point current, temp;
+    char str[5];
     
     // Queue for BFS
     Point queue[48*64];
@@ -144,6 +145,8 @@ void draw_path(Point start, Point end, Point parent[48][64])
 {
     Point current = end;
     Point temp;
+    int step = 0;
+    char str[5];
     
     // 检查起点和终点是否有效
     if (start.x < 0 || start.x >= 64 || start.y < 0 || start.y >= 48 ||
@@ -176,6 +179,7 @@ void draw_path(Point start, Point end, Point parent[48][64])
         
         temp = current;
         current = parent[current.y][current.x];
+        step ++;
         delay(50);
     }
 
@@ -187,6 +191,9 @@ void draw_path(Point start, Point end, Point parent[48][64])
     // setfillstyle(SOLID_FILL, BLUE);
     // bar(end.x * 10, end.y * 10, 
     //     (end.x + 1) * 10, (end.y + 1) * 10);
+    
+    // setcolor(RED);
+    // outtextxy(20, 20, itoa(step, str, 10)); //测试
 }
 
 void init_map(int map[48][64]) //64*48个方格,每个方格10px*10px
@@ -271,15 +278,15 @@ void paint_road(int map[48][64])
     }
 }
 
-int main()
-{
-    int map[48][64];
-    int gdriver = VGA;
-	int gmode = VGAHI;
-    initgraph(&gdriver, &gmode, "C:\\BORLANDC\\BGI");
-    //map_tracking(8, 6, 34, 13);
-    //map_tracking(26, 3, 25, 33);
-    map_tracking(31, 40, 18, 22);
-    delay(3000);
-    return 0;
-}
+// int main()
+// {
+//     int map[48][64];
+//     int gdriver = VGA;
+// 	int gmode = VGAHI;
+//     initgraph(&gdriver, &gmode, "C:\\BORLANDC\\BGI");
+//     //map_tracking(8, 6, 34, 13);
+//     //map_tracking(26, 3, 25, 33);
+//     map_tracking(31, 40, 18, 22);
+//     delay(7000);
+//     return 0;
+// } // 测试用

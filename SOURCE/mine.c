@@ -4,7 +4,13 @@
 #include "gtaccount.h"
 #include "Avatarfunc.h"
 #include "force_exit.h"
+#include "address.h"
 #include "mine.h"
+
+/******
+COPYRIGHT:  Jiang Yihan & Hu Yizhuo
+FUNCTION:   Mine page func
+******/
 
 void mine_page()
 {
@@ -25,8 +31,20 @@ void mine_page()
     floodfill(615, 20, LIGHTGRAY);
     floodfill(615, 35, LIGHTGRAY);
 
+    // 绘制左侧功能键
+    setfillstyle(SOLID_FILL, YELLOW);
+    bar(10, 60, 150, 315);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(10, 60, 630, 400);
+    bar(12, 62, 148, 313);
+    setcolor(YELLOW);
+    line(10, 145, 150, 145);
+    line(10, 230, 150, 230);
+    puthz(10, 60, "设置信息", 32, 36, WHITE);
+    puthz(10, 145, "配送进度", 32, 36, WHITE);
+    puthz(10, 230, "上次购买", 32, 36, WHITE); 
+
+    // 绘制右侧详情
+    bar(170, 60, 630, 400);
 
     // 绘制底部菜单栏
     setfillstyle(SOLID_FILL, YELLOW);
@@ -51,7 +69,7 @@ int minefunc(INFO (*t)[16])
 {
     char account[20];
     int num = 0;
-    int i;
+    int i, address = 0;
     int avatar_state_val = 0;
     int last_state_val = 0;
     int click_able_val = 0;
@@ -62,10 +80,8 @@ int minefunc(INFO (*t)[16])
     int not_force_show = 0;
     unsigned char *m;
     unsigned char q=0;
-    RECORD *rp = NULL;
     m=&q;
 
-    strcpy(account, output_account());
     clrmous(MouseX, MouseY);
     cleardevice();
     mine_page();
@@ -179,7 +195,59 @@ int minefunc(INFO (*t)[16])
             MouseS = 0;
             return 5;
         }
-        
+
+        else if(mouse_press(10, 60, 150, 145) == 2) //设置信息
+        {
+            if(num == 0)
+            {
+                MouseS = 1;
+                num = 4;
+            }
+            continue;
+        }
+
+        else if(mouse_press(10, 60, 150, 145) == 1) //设置信息
+        {
+            MouseS = 0;
+            avatar_state_val = 0;
+            last_state_val = 0;
+            click_able_val = 0;
+            address = choose_address();
+            saveaddress(address);
+            clrmous(MouseX, MouseY);
+            cleardevice();
+            mine_page();
+            real_time(m, &force_show);
+            continue;
+        }
+
+        else if(mouse_press(10, 145, 150, 230) == 2) //配送进度
+        {
+            if(num == 0)
+            {
+                MouseS = 1;
+                num = 5;
+            }
+            continue;
+        }
+
+        else if(mouse_press(10, 145, 150, 230) == 1) //配送进度
+        {
+            MouseS = 0;
+            avatar_state_val = 0;
+            last_state_val = 0;
+            click_able_val = 0;
+            address = get_address_num();
+            clrmous(MouseX, MouseY);
+            cleardevice();
+            show_deliver(address);
+            clrmous(MouseX, MouseY);
+            cleardevice();
+            mine_page();
+            real_time(m, &force_show);
+            continue;
+        }
+
         else
         {
             
@@ -245,6 +313,11 @@ void page_redraw()
     setlinestyle(SOLID_LINE, 0, 1);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
 
+    setfillstyle(SOLID_FILL, YELLOW);
+    bar(10, 10, 150, 40); // 时间框
+    setfillstyle(SOLID_FILL, LIGHTGRAY);
+    bar(12, 12, 148, 38);
+
     //绘制右上角头像
     circle(615, 25, 15);
     circle(615, 20, 5);
@@ -252,11 +325,16 @@ void page_redraw()
     floodfill(615, 20, LIGHTGRAY);
     floodfill(615, 35, LIGHTGRAY);
 
+    // 绘制左侧功能键
+    setfillstyle(SOLID_FILL, YELLOW);
+    bar(10, 60, 150, 400);
     setfillstyle(SOLID_FILL, LIGHTGRAY);
-    bar(10, 60, 630, 400);
+    bar(12, 62, 148, 398);
+    line(10, 145, 150, 230);
+    line(10, 315, 150, 315);
 
-    setfillstyle(SOLID_FILL, GREEN);
-    bar(200,240,280,280);
+    // 绘制右侧详情
+    bar(170, 60, 630, 400);
 
     // 绘制底部菜单栏
     setfillstyle(SOLID_FILL, YELLOW);
@@ -274,6 +352,5 @@ void page_redraw()
     puthz(12, 422, "首页", 32, 36, WHITE);
     puthz(167, 422, "快递", 32, 36, WHITE);
     puthz(322, 422, "外卖", 32, 36, WHITE);
-    puthz(200, 240, "购买", 32, 36, WHITE);
     puthz(477, 422, "我的", 32, 36, RED);
 }

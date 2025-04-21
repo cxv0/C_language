@@ -44,11 +44,29 @@ void get_acc_to_dat(char *account)
 char *output_account()
 {
     static char str[20];
+    char *result;
+    size_t length = 0;
     FILE *fp;
     check_getacc_dat();
     fp = fopen("C:\\CODE\\TEXT\\getacc.dat", "rb");
     fseek(fp, 0, SEEK_SET);
-    fread(str, 8, 1, fp);
+    while(length < 8 && str[length] != '\0')
+    {
+        length ++;
+    }
+    fread(str, 1, 8, fp);
+    if(length == 8)
+    {
+        str[length] = '\0';
+    }
     fclose(fp);
-    return str;
+    //手动实现 strdup 的功能
+    result = (char *)malloc(length + 1);
+    if(result == NULL)
+    {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    strcpy(result, str);
+    return result;
 }

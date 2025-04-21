@@ -14,7 +14,7 @@ typedef struct record //购买记录
 void check_record_dat(void); //确保record.dat存在
 int count_userrecord(void); //计数record.dat中共有几个结构体
 RECORD *new_record(RECORD *rp); //生成空白记录
-void record_addnum(RECORD *rp, INFO *ip); //此处的ip是单个结构体指针,用于添加单独一种商品的数据而不能减少
+// void record_addnum(RECORD *rp, INFO *ip); //此处的ip是单个结构体指针,用于添加单独一种商品的数据而不能减少
 void edit_record(RECORD *rp, INFO *ip); //此处的ip是单个结构体指针,用于修改单独一种商品的数据
 RECORD *ensure_record(RECORD *rp); //确认下单
 void add_record(RECORD *rp); //存储购买记录

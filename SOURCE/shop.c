@@ -59,12 +59,12 @@ RECORD *new_record(RECORD *rp) //生成空白记录
     return rp;
 }
 
-void record_addnum(RECORD *rp, INFO *ip) //此处的ip是单个结构体指针,用于添加单独一种商品的数据而不能减少
-{
-    int i = ip->NO;
-    rp->num[i - 1] += ip->num;
-    rp->sum += ip->num * ip->price;
-}
+// void record_addnum(RECORD *rp, INFO *ip) //此处的ip是单个结构体指针,用于添加单独一种商品的数据而不能减少
+// {
+//     int i = ip->NO;
+//     rp->num[i - 1] += ip->num;
+//     rp->sum += ip->num * ip->price;
+// }
 
 void edit_record(RECORD *rp, INFO *ip) //此处的ip是单个结构体指针,用于修改单独一种商品的数据
 {
@@ -109,44 +109,107 @@ void add_record(RECORD *rp) //存储购买记录
     return;
 }
 
-RECORD *output_record(char *account) //输出历史记录指针
-{
-    int i = 0, count = count_userrecord();
-    int max_record = 1; //至多输出一次记录,可调
-    int count_record = 0; //已经输出的次数
-    RECORD temp;
-    static RECORD output;
-    FILE *fp = NULL;
-    check_record_dat();
-    fp = fopen("C:\\CODE\\TEXT\\record.dat", "rb");
+// RECORD *output_record(char *account) //输出历史记录指针
+// {
+//     int i = 0, count = count_userrecord();
+//     int count_output = 0;
+//     static RECORD temp;
+//     RECORD empty;
+//     FILE *fp = NULL;
+//     check_record_dat();
+//     fp = fopen("C:\\CODE\\TEXT\\record.dat", "rb");
+    
+//     empty.account[0] = '\0';
+//     empty.sum = 0.0f;
+//     for(i = 0; i < 16; i ++)
+//     {
+//         empty.num[i] = 0;
+//     }
+//     empty.state = -1;
+//     temp = empty;
 
-    if(fp == NULL)
-    {
-        printf("\nError on open file %s!", "C:\\CODE\\TEXT\\record.dat");
-        delay(3000);
-        exit(1);
-    }
+//     if(fp == NULL)
+//     {
+//         outtextxy(20, 20, "Error on open file C:\\CODE\\TEXT\\record.dat!");
+//         delay(3000);
+//         exit(1);
+//     }
 
-    strcpy(temp.account, account);
-    fseek(fp, 0, SEEK_END);
-    for(i = count; i > 0; i --)
-    {
-        fseek(fp, (i - 1) * sizeof(RECORD), SEEK_SET);
-        fread(&temp, sizeof(RECORD), 1, fp);
-        if(strcmp(temp.account, account) == 0)
-        {
-            output = temp;
-            count_record ++;
-            if(count_record >= max_record)
-            {
-                fclose(fp);
-                return &output;
-            }
-        }
-    }
-    fclose(fp);
-    return NULL;
-}
+//     strcpy(temp.account, account);
+//     fseek(fp, 0, SEEK_END);
+//     for(i = count; i > 0; i --)
+//     {
+//         fseek(fp, (i - 1) * sizeof(RECORD), SEEK_SET);
+//         fread(&temp, sizeof(RECORD), 1, fp);
+//         if(strcmp(temp.account, account) == 0 && temp.state == 1)
+//         {
+//             count_output ++;
+//             fclose(fp);
+//             return &temp;
+//         }
+//     }
+
+//     if(count_output == 0)
+//     {
+//         fclose(fp);
+//         return NULL;
+//     }
+// }
+
+// RECORD *output_record(char *account)
+// {
+//     int i = 0, count = count_userrecord();
+//     static RECORD *temp = NULL;
+//     RECORD empty;
+//     FILE *fp = NULL;
+
+//     check_record_dat();
+//     fp = fopen("C:\\CODE\\TEXT\\record.dat", "rb");
+
+//     empty.account[0] = '\0';
+//     empty.sum = 0.0f;
+//     for(i = 0; i < 16; i++)
+//     {
+//         empty.num[i] = 0;
+//     }
+//     empty.state = -1;
+//     *temp = empty;
+
+//     if(fp == NULL)
+//     {
+//         outtextxy(20, 20, "Error on open file C:\\CODE\\TEXT\\record.dat!");
+//         delay(3000);
+//         free(temp); //释放分配的内存
+//         exit(1);
+//     }
+
+//     strcpy(temp->account, account);
+//     for(i = count; i > 0; i--)
+//     {
+//         fseek(fp, (i - 1) * sizeof(RECORD), SEEK_SET);
+//         *temp = empty;
+//         // fread(temp, sizeof(RECORD), 1, fp);
+
+//         if(fread(temp, sizeof(RECORD), 1, fp) != 1)
+//         {
+//             settextstyle(TRIPLEX_FONT, 0, 2);
+//             outtextxy(20, 20, "fread error!");
+//             outtextxy(20, 35, temp->account);
+//             delay(3000);
+//             exit(1);
+//         }
+
+//         if(strcmp(temp->account, account) == 0 && temp->state == 1)
+//         {
+//             fclose(fp);
+//             return temp;
+//         }
+//     }
+
+//     output_to_screen(temp);
+//     fclose(fp);
+//     return NULL;
+// }
 
 void output_to_screen(RECORD *rp)
 {

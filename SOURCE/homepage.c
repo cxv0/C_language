@@ -202,7 +202,6 @@ int homefunc()
            
         else
         {
-            
             if(num != 0)
             {
                 MouseS = 0;

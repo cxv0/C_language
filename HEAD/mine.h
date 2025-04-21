@@ -10,5 +10,4 @@ float total(INFO (*t)[16]);
 void draw_page(void);
 void page_redraw(void);
 
-
 #endif
